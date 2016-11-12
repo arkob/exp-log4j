@@ -99,23 +99,6 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
   }
 
   /**
-     Add an object renderer for a specific class.
-   */
-  public
-  void addRenderer(Class classToRender, ObjectRenderer or) {
-    rendererMap.put(classToRender, or);
-  }
-
-  public
-  void addHierarchyEventListener(HierarchyEventListener listener) {
-    if(listeners.contains(listener)) {
-      LogLog.warn("Ignoring attempt to add an existent listener.");
-    } else {
-      listeners.addElement(listener);
-    }
-  }
-
-  /**
      This call will clear all logger definitions from the internal
      hashtable. Invoking this method will irrevocably mess up the
      logger hierarchy.
@@ -131,37 +114,6 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
   }
 
   /**
-     Check if the named logger exists in the hierarchy. If so return
-     its reference, otherwise returns <code>null</code>.
-
-     @param name The name of the logger to search for.
-
-  */
-  public
-  Logger exists(String name) {
-    Object o = ht.get(new CategoryKey(name));
-    if(o instanceof Logger) {
-      return (Logger) o;
-    } else {
-      return null;
-    }
-  }
-
-  /**
-     The string form of {@link #setThreshold(Level)}.
-  */
-  public
-  void setThreshold(String levelStr) {
-    Level l = (Level) Level.toLevel(levelStr, null);
-    if(l != null) {
-      setThreshold(l);
-    } else {
-      LogLog.warn("Could not convert ["+levelStr+"] to Level.");
-    }
-  }
-
-
-  /**
      Enable logging for logging requests with level <code>l</code> or
      higher. By default all levels are enabled.
 
@@ -172,18 +124,6 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
     if(l != null) {
       thresholdInt = l.level;
       threshold = l;
-    }
-  }
-
-  public
-  void fireAddAppenderEvent(Category logger, Appender appender) {
-    if(listeners != null) {
-      int size = listeners.size();
-      HierarchyEventListener listener;
-      for(int i = 0; i < size; i++) {
-	listener = (HierarchyEventListener) listeners.elementAt(i);
-	listener.addAppenderEvent(logger, appender);
-      }
     }
   }
 
@@ -198,15 +138,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
     }
   }
 
-  /**
-     Returns a {@link Level} representation of the <code>enable</code>
-     state.
-
-     @since 1.2 */
-  public
-  Level getThreshold() {
-    return threshold;
-  }
+  
 
   /**
      Returns an integer representation of the this repository's
@@ -259,24 +191,6 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
   }
 
   /**
-     @deprecated Please use {@link #getCurrentLoggers} instead.
-   */
-  public
-  Enumeration getCurrentCategories() {
-    return getCurrentLoggers();
-  }
-
-
-  /**
-     Get the renderer map for this hierarchy.
-  */
-  public
-  RendererMap getRendererMap() {
-    return rendererMap;
-  }
-
-
-  /**
      Get the root of this hierarchy.
 
      @since 0.9.0
@@ -284,99 +198,6 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
   public
   Logger getRootLogger() {
     return root;
-  }
-
-  /**
-     This method will return <code>true</code> if this repository is
-     disabled for <code>level</code> object passed as parameter and
-     <code>false</code> otherwise. See also the {@link
-     #setThreshold(Level) threshold} emthod.  */
-  public
-  boolean isDisabled(int level) {
-    return thresholdInt > level;
-  }
-
-  /**
-     @deprecated Deprecated with no replacement.
-  */
-  public
-  void overrideAsNeeded(String override) {
-    LogLog.warn("The Hiearchy.overrideAsNeeded method has been deprecated.");
-  }
-
-  /**
-     Does nothing.
-
-     @deprecated Deprecated with no replacement.
-   */
-  public
-  void setDisableOverride(String override) {
-    LogLog.warn("The Hiearchy.setDisableOverride method has been deprecated.");
-  }
-
-
-
-  /**
-     Used by subclasses to add a renderer to the hierarchy passed as parameter.
-   */
-  public
-  void setRenderer(Class renderedClass, ObjectRenderer renderer) {
-    rendererMap.put(renderedClass, renderer);
-  }
-
-    /**
-     * {@inheritDoc}
-     */
-  public void setThrowableRenderer(final ThrowableRenderer renderer) {
-      throwableRenderer = renderer;
-  }
-
-    /**
-     * {@inheritDoc}
-     */
-  public ThrowableRenderer getThrowableRenderer() {
-      return throwableRenderer;
-  }
-
-
-  /**
-     Shutting down a hierarchy will <em>safely</em> close and remove
-     all appenders in all categories including the root logger.
-
-     <p>Some appenders such as {@link org.apache.log4j.net.SocketAppender}
-     and {@link AsyncAppender} need to be closed before the
-     application exists. Otherwise, pending logging events might be
-     lost.
-
-     <p>The <code>shutdown</code> method is careful to close nested
-     appenders before closing regular appenders. This is allows
-     configurations where a regular appender is attached to a logger
-     and again to a nested appender.
-
-
-     @since 1.0 */
-  public
-  void shutdown() {
-    Logger root = getRootLogger();
-
-    // begin by closing nested appenders
-    root.closeNestedAppenders();
-
-    synchronized(ht) {
-      Enumeration cats = this.getCurrentLoggers();
-      while(cats.hasMoreElements()) {
-	Logger c = (Logger) cats.nextElement();
-	c.closeNestedAppenders();
-      }
-
-      // then, remove all appenders
-      root.removeAllAppenders();
-      cats = this.getCurrentLoggers();
-      while(cats.hasMoreElements()) {
-	Logger c = (Logger) cats.nextElement();
-	c.removeAllAppenders();
-      }
-    }
   }
 
 }
