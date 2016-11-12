@@ -236,51 +236,7 @@ class MyTableModel
 	}
 
 
-	/** @see javax.swing.table.TableModel **/
-    public int getRowCount() {
-        synchronized (mLock) {
-            return mFilteredEvents.length;
-        }
-    }
-
-    /** @see javax.swing.table.TableModel **/
-    public int getColumnCount() {
-        // does not need to be synchronized
-        return COL_NAMES.length;
-    }
-
-    /** @see javax.swing.table.TableModel **/
-    public String getColumnName(int aCol) {
-        // does not need to be synchronized
-        return COL_NAMES[aCol];
-    }
-
-    /** @see javax.swing.table.TableModel **/
-    public Class getColumnClass(int aCol) {
-        // does not need to be synchronized
-        return (aCol == 2) ? Boolean.class : Object.class;
-    }
-
-    /** @see javax.swing.table.TableModel **/
-    public Object getValueAt(int aRow, int aCol) {
-        synchronized (mLock) {
-            final EventDetails event = mFilteredEvents[aRow];
-
-            if (aCol == 0) {
-                return DATE_FORMATTER.format(new Date(event.getTimeStamp()));
-            } else if (aCol == 1) {
-                return event.getPriority();
-            } else if (aCol == 2) {
-                return (event.getThrowableStrRep() == null)
-                    ? Boolean.FALSE : Boolean.TRUE;
-            } else if (aCol == 3) {
-                return event.getCategoryName();
-            } else if (aCol == 4) {
-                return event.getNDC();
-            }
-            return event.getMessage();
-        }
-    }
+	
 
     ////////////////////////////////////////////////////////////////////////////
     // Public Methods
@@ -348,17 +304,6 @@ class MyTableModel
     }
 
     /**
-     * Add an event to the list.
-     *
-     * @param aEvent a <code>EventDetails</code> value
-     */
-    public void addEvent(EventDetails aEvent) {
-        synchronized (mLock) {
-            mPendingEvents.add(aEvent);
-        }
-    }
-
-    /**
      * Clear the list of all events.
      */
     public void clear() {
@@ -384,17 +329,7 @@ class MyTableModel
         }
     }
 
-    /**
-     * Get the throwable information at a specified row in the filtered events.
-     *
-     * @param aRow the row index of the event
-     * @return the throwable information
-     */
-    public EventDetails getEventDetails(int aRow) {
-        synchronized (mLock) {
-            return mFilteredEvents[aRow];
-        }
-    }
+    
 
     ////////////////////////////////////////////////////////////////////////////
     // Private methods
@@ -468,82 +403,14 @@ class MyTableModel
     }
 
 
-	/** @param detailPanel TODO
-	 * @param aEvent TODO
-	 * @see ListSelectionListener **/
-	public void valueChanged(DetailPanel detailPanel, ListSelectionEvent aEvent) {
-	    //Ignore extra messages.
-	    if (aEvent.getValueIsAdjusting()) {
-	        return;
-	    }
-	
-	    final ListSelectionModel lsm = (ListSelectionModel) aEvent.getSource();
-	    if (lsm.isSelectionEmpty()) {
-	        detailPanel.mDetails.setText("Nothing selected");
-	    } else {
-	        final int selectedRow = lsm.getMinSelectionIndex();
-	        final EventDetails e = getEventDetails(selectedRow);
-	        final Object[] args =
-	        {
-	            new Date(e.getTimeStamp()),
-	            e.getPriority(),
-	            detailPanel.escape(e.getThreadName()),
-	            detailPanel.escape(e.getNDC()),
-	            detailPanel.escape(e.getCategoryName()),
-	            detailPanel.escape(e.getLocationDetails()),
-	            detailPanel.escape(e.getMessage()),
-	            detailPanel.escape(DetailPanel.getThrowableStrRep(e))
-	        };
-	        detailPanel.mDetails.setText(DetailPanel.FORMATTER.format(args));
-	        detailPanel.mDetails.setCaretPosition(0);
-	    }
-	}
-
-
-	/** @see #mCategoryName **/
-	public String getCategoryName() {
-	    return mCategoryName;
-	}
-
-
 	/** @see #mLocationDetails **/
 	String getLocationDetails(){
 	    return mLocationDetails;
 	}
 
 
-	/** @see #mMessage **/
-	public String getMessage() {
-	    return mMessage;
-	}
-
-
-	/** @see #mNDC **/
-	public String getNDC() {
-	    return mNDC;
-	}
-
-
-	/** @see #mPriority **/
-	public Priority getPriority() {
-	    return mPriority;
-	}
-
-
 	/** @see #mThreadName **/
 	String getThreadName() {
 	    return mThreadName;
-	}
-
-
-	/** @see #mThrowableStrRep **/
-	public String[] getThrowableStrRep() {
-	    return mThrowableStrRep;
-	}
-
-
-	/** @see #mTimeStamp **/
-	public long getTimeStamp() {
-	    return mTimeStamp;
 	}
 }
