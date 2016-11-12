@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/2. START - apache-log4j-1.2.17.iml" filepath="$PROJECT_DIR$/2. START - apache-log4j-1.2.17.iml" />
+      <module fileurl="file://$PROJECT_DIR$/contribs/contribs.iml" filepath="$PROJECT_DIR$/contribs/contribs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/site/apidocs/org/apache/log4j/xml/examples/examples.iml" filepath="$PROJECT_DIR$/site/apidocs/org/apache/log4j/xml/examples/examples.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/main/main.iml" filepath="$PROJECT_DIR$/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/performance/performance.iml" filepath="$PROJECT_DIR$/src/performance/performance.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tests/src/tests.iml" filepath="$PROJECT_DIR$/tests/src/tests.iml" />
+    </modules>
+  </component>
+</project>
