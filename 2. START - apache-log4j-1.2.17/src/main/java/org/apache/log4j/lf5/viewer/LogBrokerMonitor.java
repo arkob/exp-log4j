@@ -65,7 +65,6 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.lf5.LogLevel;
 import org.apache.log4j.lf5.LogRecord;
 import org.apache.log4j.lf5.LogRecordFilter;
-import org.apache.log4j.lf5.util.LogFileParser;
 import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryExplorerTree;
 import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryPath;
 import org.apache.log4j.lf5.viewer.configure.ConfigurationManager;
